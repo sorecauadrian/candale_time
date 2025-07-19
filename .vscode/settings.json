@@ -1,3 +1,4 @@
 {
-    "dart.sdkPath": "~/flutter/bin/cache/dart-sdk"
+    "dart.sdkPath": "~/dev/flutter_windows_3.32.6-stable/flutter/bin/cache/dart-sdk",
+    "dart.flutterSdkPath": "~/dev/flutter_windows_3.32.6-stable/flutter"
 }
