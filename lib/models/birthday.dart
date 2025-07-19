@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'gift_idea.dart';
 
 part 'birthday.g.dart';
 
@@ -18,13 +17,18 @@ class Birthday extends HiveObject {
   int? birthYear;
 
   @HiveField(4)
-  List<GiftIdea> giftIdeas;
+  List<int>? giftIdeaKeys;
+
+  int? ageAt(DateTime date) {
+    if (birthYear == null) return null;
+    return date.year - birthYear!;
+  }
 
   Birthday({
     required this.name,
     required this.date,
     required this.relation,
     this.birthYear,
-    this.giftIdeas = const [],
+    this.giftIdeaKeys = const [],
   });
 }

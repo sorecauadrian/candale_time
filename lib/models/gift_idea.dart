@@ -8,10 +8,26 @@ class GiftIdea extends HiveObject {
   String description;
 
   @HiveField(1)
-  bool isTaken;
+  bool taken;
+
+  @HiveField(2)
+  String? link;
+
+  @HiveField(3)
+  String? imagePath;
+
+  @HiveField(4)
+  String? videoLink;
+
+  @HiveField(5)
+  String? notes;
 
   GiftIdea({
     required this.description,
-    this.isTaken = false,
+    this.taken = false,
+    this.link,
+    this.imagePath,
+    this.videoLink,
+    this.notes,
   });
 }
