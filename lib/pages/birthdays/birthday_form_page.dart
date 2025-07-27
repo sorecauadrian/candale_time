@@ -8,7 +8,8 @@ import '../gifts/gift_idea_form_page.dart';
 
 class BirthdayFormPage extends StatefulWidget {
   final Birthday? birthday;
-  const BirthdayFormPage({super.key, this.birthday});
+  final DateTime? initialDate;
+  const BirthdayFormPage({super.key, this.birthday, this.initialDate});
 
   @override
   State<BirthdayFormPage> createState() => _BirthdayFormPageState();
@@ -22,18 +23,20 @@ class _BirthdayFormPageState extends State<BirthdayFormPage> {
   DateTime _bday = DateTime.now();
 
   late final Box<GiftIdea> giftBox;
-  late Set<int> selectedGiftIds; // ← picked gifts
+  late Set<int> selectedGiftIds;
 
   @override
   void initState() {
     super.initState();
     final b = widget.birthday;
-    _nameCtrl      = TextEditingController(text: b?.name ?? '');
-    _relationCtrl  = TextEditingController(text: b?.relation ?? '');
-    _yearCtrl      = TextEditingController(text: b?.birthYear?.toString() ?? '');
-    _bday          = b?.date ?? DateTime.now();
 
-    giftBox = Hive.box<GiftIdea>('gift_ideas');
+    _nameCtrl     = TextEditingController(text: b?.name ?? '');
+    _relationCtrl = TextEditingController(text: b?.relation ?? '');
+    _yearCtrl     = TextEditingController(text: b?.birthYear?.toString() ?? '');
+
+    _bday = b?.date ?? widget.initialDate ?? DateTime.now();
+
+    giftBox         = Hive.box<GiftIdea>('gift_ideas');
     selectedGiftIds = Set<int>.from(b?.giftIdeaKeys ?? []);
   }
 
@@ -44,8 +47,6 @@ class _BirthdayFormPageState extends State<BirthdayFormPage> {
     _yearCtrl.dispose();
     super.dispose();
   }
-
-  /* ─────────────────────────────── UI helpers ─────────────────────────────── */
 
   Future<void> _pickDate() async {
     final d = await showDatePicker(
@@ -127,8 +128,6 @@ class _BirthdayFormPageState extends State<BirthdayFormPage> {
     if (mounted) setState(() {});
   }
 
-  /* ───────────────────────────────── Save ────────────────────────────────── */
-
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     final box = Hive.box<Birthday>('birthdays');
@@ -150,8 +149,6 @@ class _BirthdayFormPageState extends State<BirthdayFormPage> {
 
     if (mounted) Navigator.pop(context);
   }
-
-  /* ────────────────────────────────── UI ─────────────────────────────────── */
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -180,6 +177,14 @@ class _BirthdayFormPageState extends State<BirthdayFormPage> {
                   controller: _yearCtrl,
                   decoration: const InputDecoration(labelText: 'Birth year'),
                   keyboardType: TextInputType.number,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return null;
+                    final yr = int.tryParse(v);
+                    final now = DateTime.now().year;
+                    return (yr == null || yr < 1900 || yr > now)
+                        ? 'Enter a valid year (1900-$now)'
+                        : null;
+                  },
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -194,11 +199,11 @@ class _BirthdayFormPageState extends State<BirthdayFormPage> {
                 const Divider(height: 32),
                 ListTile(
                   title: const Text('Gift ideas'),
-                  subtitle: Text(
-                    selectedGiftIds.isEmpty
-                        ? 'None selected'
-                        : '${selectedGiftIds.length} selected',
-                  ),
+                  subtitle: selectedGiftIds.isEmpty
+                  ? const Text('None selected')
+                  : Text(selectedGiftIds
+                      .map((id) => giftBox.get(id)?.description ?? '…')
+                      .join(', ')),
                   trailing: const Icon(Icons.navigate_next),
                   onTap: _showGiftPicker,
                 ),

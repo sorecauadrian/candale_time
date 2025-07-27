@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../models/gift_idea.dart';
@@ -36,12 +37,19 @@ class _GiftIdeasTabState extends State<GiftIdeasTab> {
               if (gift == null) return const SizedBox.shrink();
 
               return ListTile(
+                leading: gift.imagePaths.isNotEmpty && File(gift.imagePaths.first).existsSync()
+                    ? Image.file(File(gift.imagePaths.first), width: 48, height: 48, fit: BoxFit.cover)
+                    : gift.videoPaths.isNotEmpty
+                        ? const Icon(Icons.videocam)
+                        : const Icon(Icons.card_giftcard),
                 title: Text(gift.description),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (gift.notes != null) Text(gift.notes!),
                     if (gift.link != null) Text('🔗 ${gift.link}'),
+                    if (gift.imagePaths.length + gift.videoPaths.length > 1)
+                      Text('${gift.imagePaths.length + gift.videoPaths.length} attachments'),
                   ],
                 ),
                 trailing: IconButton(
@@ -50,9 +58,7 @@ class _GiftIdeasTabState extends State<GiftIdeasTab> {
                 ),
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => GiftIdeaFormPage(giftIdea: gift),
-                  ),
+                  MaterialPageRoute(builder: (_) => GiftIdeaFormPage(gift: gift)),
                 ),
               );
             },

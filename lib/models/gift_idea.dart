@@ -1,33 +1,23 @@
 import 'package:hive/hive.dart';
-
 part 'gift_idea.g.dart';
 
 @HiveType(typeId: 1)
 class GiftIdea extends HiveObject {
-  @HiveField(0)
-  String description;
+  @HiveField(0) String description;
+  @HiveField(1) bool taken;
 
-  @HiveField(1)
-  bool taken;
-
-  @HiveField(2)
-  String? link;
-
-  @HiveField(3)
-  String? imagePath;
-
-  @HiveField(4)
-  String? videoLink;
-
-  @HiveField(5)
-  String? notes;
+  @HiveField(2) String? link;
+  @HiveField(3) List<String> imagePaths;
+  @HiveField(4) List<String> videoPaths;
+  @HiveField(5) String? notes;
 
   GiftIdea({
     required this.description,
     this.taken = false,
     this.link,
-    this.imagePath,
-    this.videoLink,
+    List<String>? imagePaths,
+    List<String>? videoPaths,
     this.notes,
-  });
+  })  : imagePaths = imagePaths ?? [],
+        videoPaths = videoPaths ?? [];
 }

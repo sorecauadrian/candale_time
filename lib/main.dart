@@ -28,7 +28,14 @@ class CandaleTimeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Candale Time',
-      theme: ThemeData(primarySwatch: Colors.pink),
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+        tabBarTheme: const TabBarThemeData(
+          labelColor: Colors.white,  
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
+        ),
+      ),
       home: const HomeTabs(),
       routes: {
         '/edit-birthday': (context) {
@@ -50,10 +57,12 @@ class HomeTabs extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Candale Time'),
+          toolbarHeight: 0,
+          elevation: 0,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           bottom: const TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.cake), text: 'Birthdays'),
+              Tab(icon: Icon(Icons.cake),  text: 'Birthdays'),
               Tab(icon: Icon(Icons.card_giftcard), text: 'Gifts'),
             ],
           ),
@@ -68,3 +77,4 @@ class HomeTabs extends StatelessWidget {
     );
   }
 }
+

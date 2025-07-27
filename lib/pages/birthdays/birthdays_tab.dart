@@ -116,11 +116,17 @@ class _BirthdaysTabState extends State<BirthdaysTab> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const BirthdayFormPage()),
-        ),
         tooltip: 'Add Birthday',
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BirthdayFormPage(
+                initialDate: _selectedDay,
+              ),
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
